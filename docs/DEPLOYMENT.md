@@ -31,9 +31,10 @@ Stage 8 supplies configuration and local production checks. It does not deploy i
 | `MONGODB_URI` | Private Atlas connection URI with the intended database name |
 | `JWT_SECRET` | Strong random secret, at least 32 characters; keep stable across restarts |
 | `TRUST_PROXY` | `1` for the direct Render edge → Node layout; verify proxy topology before changing |
-| `MAIL_MODE` | `resend` for the HTTPS option, or `smtp` where outbound SMTP is supported |
+| `MAIL_MODE` | `resend` or `smtp2go` for HTTPS delivery, or `smtp` where outbound SMTP is supported |
 | `MAIL_FROM` | Sender authorized by your mail provider |
 | `RESEND_API_KEY` | Private key, required only with `MAIL_MODE=resend` |
+| `SMTP2GO_API_KEY` | Private key, required only with `MAIL_MODE=smtp2go` |
 | `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS` | Required for SMTP; TLS is required by this app |
 | `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET` | Optional Google web OAuth client, configured as in Stage 6 |
 | `GOOGLE_REDIRECT_URI` | Canonical APP_ORIGIN plus `/api/google/callback` |

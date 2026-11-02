@@ -13,7 +13,7 @@ export function runtimeEnvironment(env) {
   if (!Number.isInteger(port) || port < 1 || port > 65535) throw new Error("PORT must be an integer from 1 to 65535.");
   if (!/^[0-5]$/.test(proxy)) throw new Error("TRUST_PROXY must be an explicit trusted hop count from 0 to 5.");
   const mailMode = env.MAIL_MODE || (production ? "smtp" : "file");
-  if (!["file", "smtp", "resend"].includes(mailMode)) throw new Error("MAIL_MODE must be file, smtp, or resend.");
-  if (production && mailMode === "file") throw new Error("Local email previews cannot be enabled in production. Use MAIL_MODE=smtp or resend.");
+  if (!["file", "smtp", "resend", "smtp2go"].includes(mailMode)) throw new Error("MAIL_MODE must be file, smtp, resend, or smtp2go.");
+  if (production && mailMode === "file") throw new Error("Local email previews cannot be enabled in production. Use MAIL_MODE=smtp, resend, or smtp2go.");
   return { production, appOrigin, port, trustProxy: Number(proxy) || false, jwtSecret: env.JWT_SECRET, mongoUri: env.MONGODB_URI };
 }

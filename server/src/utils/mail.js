@@ -18,6 +18,34 @@ function createAccountMailer(env, production, kind) {
       ? `Use this link within 24 hours to verify your current Planora email:\n${url}\n\nIf you did not request this, ignore this message.`
       : `Use this link within 15 minutes to reset your Planora password:\n${url}\n\nIf you did not request this, ignore this message.`;
   const mode = env.MAIL_MODE || (production ? "smtp" : "file");
+  if (mode === "smtp2go") {
+    if (!env.SMTP2GO_API_KEY?.trim() || !env.MAIL_FROM?.trim()) return null;
+    return async ({ to, url }) => {
+      try {
+        const response = await fetch("https://api.smtp2go.com/v3/email/send", {
+          method: "POST",
+          redirect: "error",
+          signal: AbortSignal.timeout(15000),
+          headers: {
+            "X-Smtp2go-Api-Key": env.SMTP2GO_API_KEY.trim(),
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+          body: JSON.stringify({ sender: env.MAIL_FROM.trim(), to: [to], subject, text_body: textFor(url) }),
+        });
+        if (!response.ok) {
+          await response.body?.cancel();
+          throw new Error("Provider rejected delivery");
+        }
+        const result = await response.json();
+        // HTTP success alone does not establish acceptance by this provider.
+        if (result?.data?.succeeded !== 1 || result?.data?.failed !== 0)
+          throw new Error("Provider did not accept the recipient");
+      } catch {
+        throw new AppError(503, "Email delivery could not be completed.", "MAIL_DELIVERY_FAILED");
+      }
+    };
+  }
   // HTTPS delivery works on hosts that block outbound SMTP ports.
   if (mode === "resend") {
     if (!env.RESEND_API_KEY || !env.MAIL_FROM) return null;

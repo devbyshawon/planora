@@ -1,5 +1,9 @@
 # Validation for v0.8.1
 
+## Public-email integration preparation — 3 November 2026
+
+`npm run verify` passed with **138 tests** (10 shared + 128 server/worker), production build, and production startup smoke using existing dependencies. Three new tests cover optional SMTP2GO configuration, bounded fixed-endpoint requests, reset/verification content, explicit recipient acceptance, and sanitized provider/transport errors without automatic retries. This is mocked provider validation; account approval, sender verification, and actual delivery to a separate inbox remain pending. The live provider has not been changed.
+
 ## PWA implementation — 3 November 2026
 
 Using existing Node.js 24.13.1 and installed dependencies, `npm run verify` passed: repository path check, **135 tests** (10 shared + 125 server/worker), production build, and production startup smoke. The smoke now checks the manifest, PNG icons, emitted service worker, and offline page assets. No dependencies or private environment files were changed.
