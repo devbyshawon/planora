@@ -1,4 +1,10 @@
 @import url("./theme.css");
+.pwa-controls { position: fixed; bottom: max(12px, env(safe-area-inset-bottom)); right: max(12px, env(safe-area-inset-right)); z-index: 20; display: grid; justify-items: end; gap: 8px; max-width: min(360px, calc(100vw - 24px)); font-size: 12px; }
+.pwa-controls .button { background: var(--surface); color: var(--ink); box-shadow: 0 3px 12px #00000012; }
+.pwa-notice, .pwa-install-help { margin: 0; padding: 14px; color: var(--ink); background: var(--surface); border: 1px solid var(--line); border-radius: 12px; box-shadow: 0 4px 24px #00000018; line-height: 1.6; }
+.pwa-notice { display: grid; gap: 10px; }
+.pwa-install { display: grid; justify-items: end; gap: 8px; }
+.pwa-install-help p { margin: 8px 0; }
 * {
   box-sizing: border-box;
 }

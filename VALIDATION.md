@@ -1,4 +1,14 @@
-# Validation for v0.8.1 — M1/M2
+# Validation for v0.8.1
+
+## PWA implementation — 3 November 2026
+
+Using existing Node.js 24.13.1 and installed dependencies, `npm run verify` passed: repository path check, **135 tests** (10 shared + 125 server/worker), production build, and production startup smoke. The smoke now checks the manifest, PNG icons, emitted service worker, and offline page assets. No dependencies or private environment files were changed.
+
+Ten new tests cover public-only precaching, API/mutation bypass, network-only navigation, offline fallback, safe asset caching, cache cleanup, manifest/icon dimensions, explicit installation, and consent before reloading updates. Browser checks confirmed installation guidance and the offline reconnect page at the root URL after stopping the local production preview server.
+
+Actual OS installation, installed-app OAuth/download behavior, and a live two-tab upgrade remain manual acceptance. See [PWA.md](./docs/PWA.md). The audit result below belongs to the earlier M1/M2 run; it was not rerun for this dependency-free change.
+
+## M1/M2 record — 2 November 2026
 
 Checked on 2 November 2026 on macOS using the existing Node.js **24.13.1** and installed dependencies. The repository/CI pin remains **24.22.1**; this run does not claim validation on that exact version. No dependencies were installed, updated, or removed.
 

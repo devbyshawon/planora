@@ -28,6 +28,11 @@ try {
   assert.ok(ready, "Production server must become ready");
   const html = await call("/"); assert.equal(html.status, 200); const source = await html.text(); assert.match(source, /<div id="root">/); assert.ok(html.headers.get("content-security-policy").includes("script-src 'self'"));
   const asset = source.match(/src="([^"]+\.js)"/)[1]; assert.equal((await call(asset)).status, 200);
+  const manifestResponse = await call("/manifest.webmanifest"); assert.equal(manifestResponse.status, 200);
+  const manifest = await manifestResponse.json(); assert.equal(manifest.display, "standalone"); assert.equal(manifest.id, "/");
+  for (const icon of manifest.icons) { const response = await call(icon.src); assert.equal(response.status, 200); assert.match(response.headers.get("content-type"), /image\/png/); }
+  const worker = await call("/sw.js"); assert.equal(worker.status, 200); const workerSource = await worker.text(); assert.ok(!workerSource.includes("__PLANORA_BUILD__")); assert.match(worker.headers.get("content-type"), /javascript/);
+  for (const path of ["/offline.html", "/offline.css", "/offline.js"]) assert.equal((await call(path)).status, 200);
   assert.match(await (await call("/some/client/path")).text(), /<div id="root">/);
   const missing = await call("/api/not-a-route"); assert.equal(missing.status, 404); assert.match(missing.headers.get("content-type"), /json/);
   const headers = { Origin: origin, "X-Planora-Client": "web", "Content-Type": "application/json", "X-Forwarded-Proto": "https" };

@@ -8,6 +8,7 @@ Start with [START_HERE.md](./START_HERE.md). It explains setup on a Mac, MongoDB
 
 ## What works now
 
+- Installable online-first PWA with a public offline reconnect screen and user-controlled updates. See [installation instructions](./docs/PWA.md).
 - Day/week rows follow actual task ranges such as 09:15–09:55, 10:00–10:30, and 11:30–13:30. No fixed hourly scaffold.
 - Each weekly day has independent rows; gaps are compact, overlaps keep exact individual ranges, and any valid duration remains editable.
 

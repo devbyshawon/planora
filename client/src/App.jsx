@@ -135,10 +135,12 @@ export default function App() {
   if (initialError)
     return (
       <div className="loading-screen">
-        <h2>Planora needs its backend.</h2>
+        <h2>Planora couldn’t connect.</h2>
         <p>{initialError}</p>
         <p>
-          Start both servers with <code>npm run dev</code>, then reload.
+          {import.meta.env.DEV
+            ? <>Start both servers with <code>npm run dev</code>, then reload.</>
+            : "Check your connection and try again. The service may need a moment to wake up."}
         </p>
         <button
           className="button primary"

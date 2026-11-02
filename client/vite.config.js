@@ -1,7 +1,8 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
+import pwaBuild from "./pwa-build.js";
 export default defineConfig({
-  plugins: [react()],
+  plugins: [react(), pwaBuild()],
   server: {
     port: 5173,
     strictPort: true,
