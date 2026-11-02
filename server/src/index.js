@@ -14,6 +14,7 @@ import { googleConfig } from "./utils/google/config.js";
 import SiteSettings from "./models/SiteSettings.js";
 import ReminderDelivery from "./models/ReminderDelivery.js";
 import AdminAudit from "./models/AdminAudit.js";
+import OfflineOperation from "./models/OfflineOperation.js";
 import { runtimeEnvironment } from "./utils/environment.js";
 dotenv.config({
   path: fileURLToPath(new URL("../.env", import.meta.url)),
@@ -41,6 +42,7 @@ try {
     SiteSettings.init(),
     ReminderDelivery.init(),
     AdminAudit.init(),
+    OfflineOperation.init(),
   ]);
   const app = createApp({
     jwtSecret: runtime.jwtSecret,

@@ -18,7 +18,8 @@ export default function pwaBuild() {
         hash.update(name).update(readFileSync(new URL(name, directory)));
       }
       this.emitFile({ type: "asset", fileName: "sw.js", source:
-        source.replace("__PLANORA_BUILD__", hash.digest("hex").slice(0, 16)) });
+        source.replace("__PLANORA_BUILD__", hash.digest("hex").slice(0, 16))
+          .replace('"__PLANORA_SHELL_FILES__"', JSON.stringify(["/offline-planner.html", ...Object.keys(bundle).filter(name => name.startsWith("assets/") && /\.(?:js|css)$/.test(name)).map(name => `/${name}`)])) });
     },
   };
 }

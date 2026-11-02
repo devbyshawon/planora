@@ -2,6 +2,9 @@
 
 ## Unreleased — public launch preparation
 
+- Opt-in offline workspace for saved account tasks, IndexedDB edits, automatic connected sync, transaction-backed operation receipts, conflict protection, and JSON backup/restore.
+- Public hosted launch paused in favor of personal use and a separate source-release package. License remains deferred.
+
 - Public about, privacy, and terms pages with the confirmed support address, accessible without sign-in and linked from sign-in and the planner sidebar.
 
 - Verification cooldowns now return an explicit no-send response instead of the same message used after provider acceptance. Failed delivery retains a cooldown to limit repeated provider requests.

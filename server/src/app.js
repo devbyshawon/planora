@@ -14,6 +14,7 @@ import exportRoutes from "./routes/exports.js";
 import googleRoutes from "./routes/google.js";
 import adminRoutes from "./routes/admin.js";
 import reminderRoutes from "./routes/reminders.js";
+import offlineRoutes from "./routes/offline.js";
 import { siteSettings } from "./utils/site.js";
 import { AppError, errorHandler } from "./utils/errors.js";
 export function createApp(config) {
@@ -87,6 +88,7 @@ export function createApp(config) {
   app.use("/api/google", googleRoutes);
   app.use("/api/admin", adminRoutes);
   app.use("/api/reminders", reminderRoutes);
+  app.use("/api/offline", offlineRoutes);
   app.use("/api", (req, res, next) =>
     next(new AppError(404, "API route not found.")),
   );

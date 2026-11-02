@@ -1,5 +1,11 @@
 # Validation for v0.8.1
 
+## Offline task workspace — 3 November 2026
+
+`npm run verify` passed with **147 tests** (10 shared + 137 server/worker), production build, and production startup/PWA smoke. New coverage includes owner/origin enforcement, task/receipt atomicity, idempotent create/delete retries, concurrent retries, chained local versions, stale/deleted tasks, timezone/category/schedule/overlap rejection, local queue transitions, and offline shell asset delivery without caching APIs.
+
+A browser exercise used a disposable local account/database: enable the device copy, stop the HTTP server, reopen the offline workspace, create a task, reload and retain its pending edit, restore HTTP, observe automatic sync reach zero pending changes, and confirm the task appears in the usual online calendar. No live user tasks or Atlas data were used. Actual installed-device offline acceptance and cross-device conflict review remain user checks; this is not a guarantee of closed-app sync, encrypted device storage, or full offline feature parity.
+
 ## Public information pages — 3 November 2026
 
 Production build and production startup smoke passed with unauthenticated checks for the about, privacy, and terms HTML pages and their stylesheet. The smoke asserts the expected page titles and support address and rejects accidental SPA fallback. Browser inspection confirmed privacy-page content and readable layout. Account/backend behavior was unchanged; the preceding 139-test result remains the latest full suite run. These pages disclose current pilot limitations rather than claiming completed public email, deletion, retention, or production acceptance.

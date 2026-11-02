@@ -40,7 +40,7 @@ export async function requireAuth(req, res, next) {
   if (
     !["GET", "HEAD", "OPTIONS"].includes(req.method) ||
     (req.method === "GET" &&
-      ["/api/tasks", "/api/insights", "/api/google", "/api/reminders"].includes(
+      ["/api/tasks", "/api/insights", "/api/google", "/api/reminders", "/api/offline"].includes(
         req.baseUrl,
       ))
   ) {

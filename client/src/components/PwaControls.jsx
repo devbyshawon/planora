@@ -27,7 +27,8 @@ export default function PwaControls() {
   if (!import.meta.env.PROD) return null;
   return (
     <aside className="pwa-controls" aria-label="Planora app">
-      {!online && <p className="pwa-notice" role="status">You’re offline. Reconnect to load or save tasks. Edits aren’t queued.</p>}
+      <a className="button" href="/offline-planner.html">Offline planner</a>
+      {!online && <p className="pwa-notice" role="status">You’re offline. Open Offline planner to use the tasks saved on this device. Regular planner requests require internet.</p>}
       {(pwa.updateAvailable || pwa.reloadReady) && (
         <div className="pwa-notice" role="status">
           <span>A new version is ready. Save any open forms before reloading.</span>
@@ -44,7 +45,7 @@ export default function PwaControls() {
             <div className="pwa-install-help">
               <b>Keep Planora close</b>
               <p>In Chrome, use the browser menu’s Install app or Add to Home screen option. On iPhone/iPad, open in Safari, tap Share, then Add to Home Screen.</p>
-              <p>Internet is required for your planner. Installation doesn’t enable closed-app reminders.</p>
+              <p>Enable Offline planner on a trusted device before disconnecting. Installation doesn’t enable closed-app reminders.</p>
               <button className="text-button" onClick={() => setHelp(false)}>Close instructions</button>
             </div>
           )}

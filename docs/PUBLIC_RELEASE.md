@@ -1,5 +1,7 @@
 # Public release checklist
 
+**Scope change, 3 November 2026:** the operator stopped the public hosted-service launch effort. Planora remains a personal deployment. Prepare a separate clean source-release package; keep GitHub private and licensing deferred until ownership/contribution rights are reviewed. Items below are retained as a historical checklist, not requirements to block personal use.
+
 This is a release gate, not a claim that Planora is ready for unrestricted production use. Regular user features are intended to remain free; administration remains restricted. Free infrastructure has quotas and availability limitations.
 
 ## Confirmed baseline

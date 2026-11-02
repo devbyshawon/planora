@@ -6,7 +6,7 @@ import { runInNewContext } from "node:vm";
 const root = new URL("../../client/", import.meta.url);
 const source = readFileSync(new URL("src/service-worker.js", root), "utf8");
 const origin = "https://planora.example";
-function worker() {
+function worker({ shell = false } = {}) {
   const events = {}, stores = new Map(), calls = [];
   let fail = false, contentType = "application/javascript", cacheControl = "public", status = 200;
   let skipped = 0, claimed = 0;
@@ -29,7 +29,7 @@ function worker() {
     async skipWaiting() { skipped++; },
     addEventListener(type, callback) { events[type] = callback; },
   };
-  runInNewContext(source.replace("__PLANORA_BUILD__", "test-version"), {
+  runInNewContext(source.replace("__PLANORA_BUILD__", "test-version").replace('"__PLANORA_SHELL_FILES__"', shell ? JSON.stringify(["/offline-planner.html", "/assets/offline-12345678.js"]) : '[]'), {
     self, caches, URL, Response,
     Request: class extends Request { constructor(path, options) { super(new URL(path, origin), options); } },
     fetch: async request => {
@@ -80,6 +80,18 @@ test("PWA bypasses API reads/writes, exports, OAuth callbacks, external requests
   assert.equal(await w.request("/assets/index-12345678.js", { method: "POST" }), null);
   assert.equal(w.calls.length, 0);
   assert.equal(w.stores.size, 0);
+});
+
+test("offline workspace shell loads without network while API and query navigations stay private", async () => {
+  const w = worker({ shell: true });
+  await w.lifecycle("install");
+  assert.ok(w.calls.every(request => request.credentials === "omit"));
+  w.offline = true;
+  assert.equal(await (await w.request("/", { mode: "navigate" })).text(), "Resource");
+  assert.equal(await (await w.request("/offline-planner.html", { mode: "navigate" })).text(), "Resource");
+  assert.equal(await (await w.request("/?google=failed", { mode: "navigate" })).text(), "Public offline screen");
+  assert.equal(await (await w.request("/assets/offline-12345678.js")).text(), "Resource");
+  assert.equal(await w.request("/api/offline/snapshot"), null);
 });
 
 test("PWA never caches planner documents, recovery links or query parameters", async () => {
