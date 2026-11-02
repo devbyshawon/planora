@@ -2,7 +2,7 @@
 
 Do not disclose vulnerabilities, credentials, private task data, session cookies, password-reset links, or Google tokens in public issues.
 
-If GitHub private vulnerability reporting is enabled for this repository, use the repository's **Security → Report a vulnerability** page. A public release must provide a confirmed private reporting channel before launch; its configuration is tracked in [the release checklist](./docs/PUBLIC_RELEASE.md).
+Email **shawon12hossain@gmail.com** for private security reports. If GitHub private vulnerability reporting is enabled for this repository, you can also use **Security → Report a vulnerability**. Do not attach active secrets; explain how to reproduce with test accounts.
 
 Include a minimal reproduction, affected version, impact, and sanitized supporting evidence. Use accounts and databases you control. Do not access other users' information, disrupt services, or run intrusive tests against the public deployment.
 

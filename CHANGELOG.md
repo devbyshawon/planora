@@ -2,6 +2,8 @@
 
 ## Unreleased — public launch preparation
 
+- Public about, privacy, and terms pages with the confirmed support address, accessible without sign-in and linked from sign-in and the planner sidebar.
+
 - Verification cooldowns now return an explicit no-send response instead of the same message used after provider acceptance. Failed delivery retains a cooldown to limit repeated provider requests.
 
 - Optional SMTP2GO HTTPS account email delivery for verified senders; live provider migration and real inbox acceptance remain pending.

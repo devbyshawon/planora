@@ -1,5 +1,9 @@
 # Validation for v0.8.1
 
+## Public information pages — 3 November 2026
+
+Production build and production startup smoke passed with unauthenticated checks for the about, privacy, and terms HTML pages and their stylesheet. The smoke asserts the expected page titles and support address and rejects accidental SPA fallback. Browser inspection confirmed privacy-page content and readable layout. Account/backend behavior was unchanged; the preceding 139-test result remains the latest full suite run. These pages disclose current pilot limitations rather than claiming completed public email, deletion, retention, or production acceptance.
+
 ## Verification response correction — 3 November 2026
 
 `npm run verify` passed: **139 tests** (10 shared + 129 server/worker), production build, and production smoke. Regression coverage checks that a cooldown returns 429 `VERIFICATION_COOLDOWN` with `Retry-After: 60`, makes no provider request, and cannot claim delivery after a failed send. Failed-send tokens are removed, cooldowns are retained, and a later attempt can succeed. Resend configuration was not changed; public-recipient delivery remains blocked by the current test sender.

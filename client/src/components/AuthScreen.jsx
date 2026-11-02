@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef } from "react";
 import { CalendarDays, ArrowRight, Check } from "lucide-react";
 import { api } from "../api.js";
+import LegalLinks from "./LegalLinks.jsx";
 export default function AuthScreen({ onAuth, initialMode = "register" }) {
   const [mode, setMode] = useState(initialMode),
     [message, setMessage] = useState(""),
@@ -233,6 +234,7 @@ export default function AuthScreen({ onAuth, initialMode = "register" }) {
             </button>
           )}
           <small className="muted">Planora v0.8.1 · Your day, your time.</small>
+          <LegalLinks />
         </form>
       </section>
     </main>

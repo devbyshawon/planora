@@ -22,8 +22,9 @@ This is a release gate, not a claim that Planora is ready for unrestricted produ
 
 ## Privacy and account lifecycle
 
-- [ ] Confirm operator name and public support/security contact.
+- [x] Confirm operator name and public support/security contact: MD. Shawon Hossain, shawon12hossain@gmail.com. Copyright year 2026. License deferred; repository must remain private.
 - [ ] Publish accurate privacy and terms pages covering task data, account email, Google tokens/calendar data, providers, retention, and service limits.
+  - Prepared public `/about.html`, `/privacy.html`, and `/terms.html` with account-deletion and retention gaps explicitly disclosed. Keep them aligned with future implementation and operator retention decisions.
 - [ ] Provide an authenticated, password-confirmed account deletion workflow and define backup retention and remote Google calendar behavior.
 - [ ] Test deletion ownership, session invalidation, associated data removal, and in-flight Google sync behavior.
 - [ ] Verify Google disconnect/revocation and clarify that installed browser reminders require the application to remain open.

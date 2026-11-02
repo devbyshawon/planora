@@ -6,6 +6,8 @@ Upgrading an existing installation? Read [UPGRADE_CUSTOM_SLOTS.md](./UPGRADE_CUS
 
 Start with [START_HERE.md](./START_HERE.md). It explains setup on a Mac, MongoDB Atlas, the first run, and a practical verification exercise.
 
+Public release preparation is tracked in [PUBLIC_RELEASE.md](./docs/PUBLIC_RELEASE.md). Support/security contact: **shawon12hossain@gmail.com**. The deployment remains a pilot; repository licensing is deferred and free hosted access does not grant source redistribution rights. Copyright © 2026 MD. Shawon Hossain.
+
 ## What works now
 
 - Installable online-first PWA with a public offline reconnect screen and user-controlled updates. See [installation instructions](./docs/PWA.md).

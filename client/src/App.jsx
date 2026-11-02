@@ -41,6 +41,7 @@ import GoogleCalendarDialog from "./components/GoogleCalendarDialog.jsx";
 import AdminDialog from "./components/AdminDialog.jsx";
 import VerificationScreen from "./components/VerificationScreen.jsx";
 import MiniMonth from "./components/MiniMonth.jsx";
+import LegalLinks from "./components/LegalLinks.jsx";
 import useBrowserReminders from "./useBrowserReminders.js";
 import { startTaskDrag } from "./drag.js";
 import { minutes } from "../../shared/calendar.js";
@@ -741,6 +742,7 @@ function Planner({ user, onLogout, onUserUpdated: commitUser }) {
               is still progress.
             </p>
             <span className="muted">Planora · v0.8.1</span>
+            <LegalLinks />
           </div>
         </aside>
         <main className="workspace">

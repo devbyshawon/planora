@@ -33,6 +33,11 @@ try {
   for (const icon of manifest.icons) { const response = await call(icon.src); assert.equal(response.status, 200); assert.match(response.headers.get("content-type"), /image\/png/); }
   const worker = await call("/sw.js"); assert.equal(worker.status, 200); const workerSource = await worker.text(); assert.ok(!workerSource.includes("__PLANORA_BUILD__")); assert.match(worker.headers.get("content-type"), /javascript/);
   for (const path of ["/offline.html", "/offline.css", "/offline.js"]) assert.equal((await call(path)).status, 200);
+  for (const [path, title] of [["/about.html", "About Planora"], ["/privacy.html", "Privacy policy"], ["/terms.html", "Terms of use"]]) {
+    const response = await call(path); assert.equal(response.status, 200); assert.match(response.headers.get("content-type"), /text\/html/);
+    const page = await response.text(); assert.ok(page.includes(`<title>${title}`)); assert.ok(page.includes("mailto:shawon12hossain@gmail.com")); assert.ok(!page.includes('<div id="root">'));
+  }
+  const legalStyles = await call("/legal.css"); assert.equal(legalStyles.status, 200); assert.match(legalStyles.headers.get("content-type"), /text\/css/);
   assert.match(await (await call("/some/client/path")).text(), /<div id="root">/);
   const missing = await call("/api/not-a-route"); assert.equal(missing.status, 404); assert.match(missing.headers.get("content-type"), /json/);
   const headers = { Origin: origin, "X-Planora-Client": "web", "Content-Type": "application/json", "X-Forwarded-Proto": "https" };
