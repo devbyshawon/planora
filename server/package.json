@@ -1,0 +1,33 @@
+{
+  "name": "@planora/server",
+  "version": "0.8.1",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node --watch src/index.js",
+    "start": "node src/index.js",
+    "test": "node --test test/*.test.js"
+  },
+  "dependencies": {
+    "@fontsource/noto-sans": "^5.2.5",
+    "@fontsource/noto-sans-bengali": "^5.2.7",
+    "bcryptjs": "^3.0.2",
+    "cookie-parser": "^1.4.7",
+    "dotenv": "^17.2.0",
+    "express": "^5.1.0",
+    "express-rate-limit": "^8.0.0",
+    "express-validator": "^7.2.1",
+    "helmet": "^8.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "luxon": "^3.7.0",
+    "mongoose": "^8.19.0",
+    "nodemailer": "10.3.1",
+    "pdfkit": "^0.17.2"
+  },
+  "devDependencies": {
+    "csv-parse": "7.0.3",
+    "ical.js": "^2.2.1",
+    "mongodb-memory-server": "^10.2.0",
+    "supertest": "^7.1.4"
+  }
+}

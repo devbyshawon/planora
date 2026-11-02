@@ -1,0 +1,26 @@
+services:
+  - type: web
+    name: planora
+    runtime: node
+    plan: free
+    numInstances: 1
+    buildCommand: npm ci --include=dev && npm run build
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: APP_ORIGIN
+        sync: false
+      - key: MONGODB_URI
+        sync: false
+      - key: JWT_SECRET
+        generateValue: true
+      - key: TRUST_PROXY
+        value: "1"
+      - key: MAIL_MODE
+        value: resend
+      - key: MAIL_FROM
+        sync: false
+      - key: RESEND_API_KEY
+        sync: false
