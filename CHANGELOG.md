@@ -2,6 +2,8 @@
 
 ## Unreleased — public launch preparation
 
+- Verification cooldowns now return an explicit no-send response instead of the same message used after provider acceptance. Failed delivery retains a cooldown to limit repeated provider requests.
+
 - Optional SMTP2GO HTTPS account email delivery for verified senders; live provider migration and real inbox acceptance remain pending.
 - Public release checklist, contribution and security reporting guidance, and issue/pull request templates.
 

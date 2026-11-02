@@ -72,6 +72,35 @@ test('upcoming reminders materialize recurrence without reviving deleted occurre
 test('reminder endpoints require sessions/origin and validate device and key input',async()=>{assert.equal((await request(app).get('/api/reminders/upcoming')).status,401);const{agent}=await account();assert.equal((await agent.post('/api/reminders/claim').send({})).status,403);for(const body of [{},{taskId:'bad'},{taskId:new mongoose.Types.ObjectId(),deviceId:'x',key:'a'.repeat(64)}])assert.equal((await write(agent.post('/api/reminders/claim')).send(body)).status,400);assert.equal((await write(agent.patch('/api/account/settings')).send({remindersEnabled:'true'})).status,400);});
 
 test('verification links are hashed, throttled, private, expiring, and single-use',async()=>{const{agent,user}=await account();let r=await write(agent.post('/api/auth/request-verification')).send({});assert.equal(r.status,200);await write(agent.post('/api/auth/request-verification')).send({});assert.equal(mail.length,1);const token=tokenOf(mail[0]),saved=await User.findById(user.id).select('+verificationTokenHash');assert.equal(saved.verificationTokenHash,createHash('sha256').update(token).digest('hex'));assert.ok(!JSON.stringify((await agent.get('/api/auth/me')).body).includes(token));r=await write(request(app).post('/api/auth/verify-email')).send({token});assert.equal(r.status,200);assert.equal((await agent.get('/api/auth/me')).body.user.emailVerified,true);assert.equal((await write(request(app).post('/api/auth/verify-email')).send({token})).status,400);});
+test('verification cooldown never claims a send after success or provider failure', async () => {
+  const { agent, user } = await account();
+  const send = () => write(agent.post('/api/auth/request-verification')).send({});
+  let result = await send();
+  assert.equal(result.status, 200);
+  assert.match(result.body.message, /provider accepted/);
+  result = await send();
+  assert.equal(result.status, 429);
+  assert.equal(result.body.error.code, 'VERIFICATION_COOLDOWN');
+  assert.equal(result.headers['retry-after'], '60');
+  assert.equal(mail.length, 1);
+  await User.updateOne({ _id: user.id }, { $set: { verificationRequestedAt: new Date(Date.now() - 65000) } });
+  app.locals.config.sendVerificationMail = async () => { throw new Error('PRIVATE_PROVIDER_SECRET'); };
+  result = await send();
+  assert.equal(result.status, 503);
+  assert.equal(result.body.error.code, 'MAIL_DELIVERY_FAILED');
+  const saved = await User.findById(user.id).select('+verificationTokenHash +verificationExpiresAt');
+  assert.equal(saved.verificationTokenHash, undefined);
+  assert.equal(saved.verificationExpiresAt, undefined);
+  result = await send();
+  assert.equal(result.status, 429);
+  assert.match(result.body.error.message, /No new verification email was sent/);
+  assert.ok(!JSON.stringify(result.body).includes('PRIVATE_PROVIDER_SECRET'));
+  await User.updateOne({ _id: user.id }, { $set: { verificationRequestedAt: new Date(Date.now() - 65000) } });
+  app.locals.config.sendVerificationMail = async value => mail.push(value);
+  result = await send();
+  assert.equal(result.status, 200);
+  assert.equal(mail.length, 2);
+});
 test('concurrent verification consumes a token only once and expired links are rejected',async()=>{const{agent,user}=await account();await write(agent.post('/api/auth/request-verification')).send({});const token=tokenOf(mail[0]);const result=await Promise.all([write(request(app).post('/api/auth/verify-email')).send({token}),write(request(app).post('/api/auth/verify-email')).send({token})]);assert.deepEqual(result.map(r=>r.status).sort(),[200,400]);await User.updateOne({_id:user.id},{$set:{verificationTokenHash:createHash('sha256').update('a'.repeat(64)).digest('hex'),verificationExpiresAt:new Date(Date.now()-1)}});assert.equal((await write(request(app).post('/api/auth/verify-email')).send({token:'a'.repeat(64)})).status,400);});
 test('changing email clears verification and invalidates the old address link',async()=>{const{agent,user}=await account();await write(agent.post('/api/auth/request-verification')).send({});const token=tokenOf(mail[0]);let r=await write(agent.patch('/api/account/profile')).send({email:`updated-${++count}@example.com`,currentPassword:password});assert.equal(r.status,200);assert.equal(r.body.user.emailVerified,false);assert.equal((await write(request(app).post('/api/auth/verify-email')).send({token})).status,400);await write(agent.post('/api/auth/request-verification')).send({});const latest=tokenOf(mail.at(-1));await write(request(app).post('/api/auth/verify-email')).send({token:latest});r=await write(agent.patch('/api/account/profile')).send({email:`again-${++count}@example.com`,currentPassword:password});assert.equal(r.body.user.emailVerified,false);assert.equal((await User.findById(user.id)).emailVerifiedAt,undefined);});
 test('verification delivery failures and missing mail configuration do not expose tokens or block planning',async()=>{const{agent}=await account();app.locals.config.sendVerificationMail=async()=>{throw new Error('PRIVATE_PROVIDER_SECRET');};let r=await write(agent.post('/api/auth/request-verification')).send({});assert.equal(r.status,503);assert.ok(!JSON.stringify(r.body).includes('PRIVATE_PROVIDER_SECRET'));app.locals.config.sendVerificationMail=null;r=await write(agent.post('/api/auth/request-verification')).send({});assert.equal(r.body.error.code,'MAIL_NOT_CONFIGURED');assert.ok(await create(agent));assert.equal(createVerificationMailer({MAIL_MODE:'file'},true),null);});

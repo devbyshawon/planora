@@ -1,5 +1,9 @@
 # Validation for v0.8.1
 
+## Verification response correction — 3 November 2026
+
+`npm run verify` passed: **139 tests** (10 shared + 129 server/worker), production build, and production smoke. Regression coverage checks that a cooldown returns 429 `VERIFICATION_COOLDOWN` with `Retry-After: 60`, makes no provider request, and cannot claim delivery after a failed send. Failed-send tokens are removed, cooldowns are retained, and a later attempt can succeed. Resend configuration was not changed; public-recipient delivery remains blocked by the current test sender.
+
 ## Public-email integration preparation — 3 November 2026
 
 `npm run verify` passed with **138 tests** (10 shared + 128 server/worker), production build, and production startup smoke using existing dependencies. Three new tests cover optional SMTP2GO configuration, bounded fixed-endpoint requests, reset/verification content, explicit recipient acceptance, and sanitized provider/transport errors without automatic retries. This is mocked provider validation; account approval, sender verification, and actual delivery to a separate inbox remain pending. The live provider has not been changed.

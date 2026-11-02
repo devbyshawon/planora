@@ -1,5 +1,7 @@
 # Free public email candidate: SMTP2GO
 
+**Current decision:** retain Resend. On 3 November 2026, signup rejected the operator's personal email with “Please use an email at your own domain to sign up” (error code 6). This route is blocked for the current account setup; the single-sender option does not establish signup eligibility. Optional code remains inactive unless explicitly configured. Do not follow these setup steps as a confirmed no-domain solution.
+
 Planora supports SMTP2GO's HTTPS API as an optional delivery mode. Existing Resend and SMTP modes remain supported. No account switch occurs until the operator changes private hosting settings.
 
 ## Operator setup

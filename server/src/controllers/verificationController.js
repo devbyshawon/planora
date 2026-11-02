@@ -33,6 +33,14 @@ export async function requestVerification(req, res) {
     },
     { new: true },
   );
+  if (!user) {
+    res.set("Retry-After", "60");
+    throw new AppError(
+      429,
+      "No new verification email was sent. Wait at least one minute after your last attempt, then try again. If your account email changed, reload Planora first.",
+      "VERIFICATION_COOLDOWN",
+    );
+  }
   if (user) {
     const url = new URL(req.app.locals.config.appOrigin);
     url.hash = `verify-email=${token}`;
@@ -52,7 +60,7 @@ export async function requestVerification(req, res) {
   }
   res.json({
     message:
-      "A verification link has been requested for your current email. It expires in 24 hours; allow a minute before requesting another.",
+      "The email provider accepted your verification email. The link expires in 24 hours. Check your inbox and spam folder; delivery may take a few minutes.",
   });
 }
 export async function verifyEmail(req, res) {
