@@ -224,7 +224,10 @@ export async function localRequest(path, options = {}, force = false) {
         if (!previous && nextTask.location === "bucket") for (const key of ["date","startTime","endTime"]) delete nextTask[key];
         if (previous?.series && ["title","notes","category","priority","date","startTime","endTime","location"].some(k=>nextTask[k]!==previous[k])) nextTask.isException=true;
         if (nextTask.location === "calendar") Object.assign(nextTask, scheduleFields(nextTask, current.snapshot.user.timeZone));
-        if (previous?.location === "calendar" && nextTask.location === "bucket") { nextTask.postponeCount = (previous.postponeCount || 0) + 1; nextTask.originalSchedule ||= { date: previous.date, startTime: previous.startTime, endTime: previous.endTime, durationMinutes: previous.durationMinutes }; }
+        if (previous?.location === "calendar" && nextTask.location === "bucket") { nextTask.bucketAddedAt = new Date().toISOString(); nextTask.postponeCount = (previous.postponeCount || 0) + 1; nextTask.originalSchedule ||= { date: previous.date, startTime: previous.startTime, endTime: previous.endTime, durationMinutes: previous.durationMinutes }; }
+        if (!previous && nextTask.location === "bucket") nextTask.bucketAddedAt = new Date().toISOString();
+        if (nextTask.status === "completed") nextTask.completedAt = previous?.completedAt || new Date().toISOString();
+        else delete nextTask.completedAt;
         addTracking(previous, nextTask, review ? `review_${options.body.action === "keep" ? "kept" : options.body.action}` : previous ? eventType(previous, nextTask) : "created");
       }
       if (kind === "delete" && previous) { const tombstone = { ...previous, deletedAt: new Date().toISOString(), updatedAt: `local:${id}` }; addTracking(previous, tombstone, "deleted"); next.snapshot.tasks.push(tombstone); }
