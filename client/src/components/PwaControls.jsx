@@ -1,10 +1,17 @@
 import { useEffect, useState, useSyncExternalStore } from "react";
 import { applyPwaUpdate, installPwa, pwaSnapshot, subscribePwa } from "../pwa.js";
+import { backupIntegrated, acceptServerVersion, syncIntegrated } from "../offline/integrated.js";
 
 export default function PwaControls() {
   const pwa = useSyncExternalStore(subscribePwa, pwaSnapshot);
   const [online, setOnline] = useState(navigator.onLine);
   const [help, setHelp] = useState(false);
+  const [sync, setSync] = useState(null);
+  useEffect(() => {
+    const update = event => setSync(event.detail);
+    window.addEventListener("planora-sync", update);
+    return () => window.removeEventListener("planora-sync", update);
+  }, []);
   const [installed, setInstalled] = useState(() =>
     window.matchMedia("(display-mode: standalone)").matches || navigator.standalone === true,
   );
@@ -27,8 +34,8 @@ export default function PwaControls() {
   if (!import.meta.env.PROD) return null;
   return (
     <aside className="pwa-controls" aria-label="Planora app">
-      <a className="button" href="/offline-planner.html">Offline planner</a>
-      {!online && <p className="pwa-notice" role="status">You’re offline. Open Offline planner to use the tasks saved on this device. Regular planner requests require internet.</p>}
+      {!online && <p className="pwa-notice" role="status">You’re offline. Changes are saved on this device and will sync when connected.</p>}
+      {sync && (sync.error || sync.pending > 0) && <div className="pwa-notice" role="status"><p>{sync.message}</p><button className="text-button" onClick={()=>backupIntegrated().catch(e=>setSync({error:true,message:e.message}))}>Download device backup</button>{online && <button className="text-button" onClick={()=>syncIntegrated().catch(()=>{})}>Retry sync</button>}{online && sync.error && <button className="text-button" onClick={()=>acceptServerVersion().catch(e=>setSync({error:true,message:e.message}))}>Use online version</button>}</div>}
       {(pwa.updateAvailable || pwa.reloadReady) && (
         <div className="pwa-notice" role="status">
           <span>A new version is ready. Save any open forms before reloading.</span>
@@ -45,7 +52,7 @@ export default function PwaControls() {
             <div className="pwa-install-help">
               <b>Keep Planora close</b>
               <p>In Chrome, use the browser menu’s Install app or Add to Home screen option. On iPhone/iPad, open in Safari, tap Share, then Add to Home Screen.</p>
-              <p>Enable Offline planner on a trusted device before disconnecting. Installation doesn’t enable closed-app reminders.</p>
+              <p>Your saved planner stays in this browser for offline use. Installation doesn’t enable closed-app reminders.</p>
               <button className="text-button" onClick={() => setHelp(false)}>Close instructions</button>
             </div>
           )}

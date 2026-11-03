@@ -87,7 +87,7 @@ export async function createSeries(req, res) {
     })) >= 50
   )
     throw new AppError(400, "Keep at most 50 active recurring series.");
-  const series = new RecurrenceSeries({ ...values, owner: req.user._id });
+  const series = new RecurrenceSeries({ ...values, ...(req.offlineId ? { _id: req.offlineId } : {}), owner: req.user._id });
   const generated = candidatesFor(
     series,
     series.startDate,

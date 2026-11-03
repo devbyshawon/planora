@@ -65,7 +65,7 @@ export async function requireAuth(req, res, next) {
     res.once("finish", finish);
     // A Google mutation can still finish after its HTTP client disconnects.
     // The route releases its lock in finally, after the external write settles.
-    if (req.baseUrl === "/api/google") req.releaseAccountLock = finish;
+    if (req.baseUrl === "/api/google" || (req.baseUrl === "/api/offline" && req.method === "POST")) req.releaseAccountLock = finish;
     res.once("close", () => {
       if (!req.releaseAccountLock) finish();
     });

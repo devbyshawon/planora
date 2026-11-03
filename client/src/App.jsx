@@ -166,6 +166,11 @@ export default function App() {
   );
 }
 function Planner({ user, onLogout, onUserUpdated: commitUser }) {
+  useEffect(() => {
+    const synced = event => { if (event.detail?.changed) setVersion(value => value + 1); };
+    window.addEventListener("planora-sync", synced);
+    return () => window.removeEventListener("planora-sync", synced);
+  }, []);
   function onUserUpdated(next) {
     commitUser(next);
     try {

@@ -51,7 +51,7 @@ export async function createTemplate(req, res) {
   if ((await Template.countDocuments({ owner: req.user._id })) >= 200)
     throw new AppError(400, "Keep at most 200 templates.");
   res.status(201).json({
-    template: await Template.create({ ...values(req), owner: req.user._id }),
+    template: await Template.create({ ...values(req), ...(req.offlineId ? { _id: req.offlineId } : {}), owner: req.user._id }),
   });
 }
 export async function updateTemplate(req, res) {

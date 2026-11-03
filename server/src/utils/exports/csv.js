@@ -1,4 +1,4 @@
-import { categoryName } from "./data.js";
+import { categoryName } from "../../../../shared/exportModel.js";
 // Quote every cell; neutralise formulas even after leading whitespace/control characters.
 export function csvCell(value) {
   let text = String(value ?? "");

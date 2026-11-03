@@ -2,6 +2,8 @@
 
 ## Unreleased — public launch preparation
 
+- Replaced the separate offline workspace with local storage and queued synchronization behind the original planner UI. Shared recurrence/export logic supplies local PDF/CSV/ICS, recurring tasks, templates, history, reviews, progress, and planner settings. Security/network-service actions remain online.
+
 - Opt-in offline workspace for saved account tasks, IndexedDB edits, automatic connected sync, transaction-backed operation receipts, conflict protection, and JSON backup/restore.
 - Public hosted launch paused in favor of personal use and a separate source-release package. License remains deferred.
 

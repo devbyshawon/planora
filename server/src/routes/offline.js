@@ -11,17 +11,27 @@ import { trackChange, applyTracking, eventType } from "../utils/tracking.js";
 import { AppError } from "../utils/errors.js";
 import { materializeRecurrences } from "../utils/recurrence.js";
 import { DateTime } from "luxon";
+import { offlineData } from "../utils/offlineSnapshot.js";
+import { applyOfflineAction } from "../controllers/offlineActionController.js";
+import { siteSettings } from "../utils/site.js";
+import { googleStatus } from "../controllers/googleController.js";
 const router = Router();
 router.use(requireAuth);
 router.get("/snapshot", async (req, res) => {
   const today = DateTime.now().setZone(req.user.timeZone);
   const from = today.minus({ days: 30 }).toISODate(), to = today.plus({ days: 90 }).toISODate();
   await materializeRecurrences(req.user, from, to);
-  const tasks = await Task.find({ owner: req.user._id, deletedAt: null }).limit(5001).lean();
+  const snapshot = await offlineData(req.user._id);
+  const tasks = snapshot.tasks;
   if (tasks.length > 5000) throw new AppError(413, "Offline mode supports up to 5,000 saved tasks. Your online data is unchanged.");
-  res.json({ user: safeUser(req.user), tasks, savedAt: new Date().toISOString(), recurrenceFrom: from, recurrenceTo: to });
+  const site = await siteSettings();
+  let google;
+  await googleStatus(req,{ json(value) { google=value; } });
+  res.json({ ...snapshot, googleStatus: google, publicSettings: { registrationOpen: site.registrationOpen, defaultTimeZone: site.defaultTimeZone, browserRemindersAllowed: site.browserRemindersAllowed }, savedAt: new Date().toISOString(), recurrenceFrom: from, recurrenceTo: to });
 });
-router.post("/operations", async (req, res) => {
+const serializedAction = action => async (req, res) => { try { await action(req, res); } finally { req.releaseAccountLock?.(); } };
+router.post("/actions", serializedAction(applyOfflineAction));
+router.post("/operations", serializedAction(async (req, res) => {
   const op = req.body;
   if (!op || !/^[a-f0-9-]{36}$/.test(op.id) || !/^[a-f0-9]{24}$/.test(op.taskId) || !["create", "update", "delete"].includes(op.kind) || typeof op.timeZone !== "string")
     throw new AppError(400, "Invalid offline operation.");
@@ -107,5 +117,5 @@ router.post("/operations", async (req, res) => {
     await Receipt.create([{ owner: user._id, operationId: op.id, fingerprint, task: task._id, updatedAt: result.updatedAt }], { session });
   });
   res.json(result);
-});
+}));
 export default router;

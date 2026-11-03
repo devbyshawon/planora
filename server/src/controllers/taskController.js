@@ -131,7 +131,7 @@ export async function createTask(req, res) {
   const tracking = trackChange(null, data, "created");
   data.plans = tracking.plans;
   data.history = tracking.appendEvents;
-  const task = await Task.create({ ...data, owner: req.user._id });
+  const task = await Task.create({ ...data, ...(req.offlineId ? { _id: req.offlineId } : {}), owner: req.user._id });
   res.status(201).json({ task });
 }
 export async function updateTask(req, res) {

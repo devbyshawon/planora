@@ -67,7 +67,7 @@ test("offline queues chain versions, preserve movement history, and retry delete
   assert.equal((await send(agent, remove)).status, 200);
   assert.equal((await send(agent, remove)).status, 200);
   assert.ok((await Task.findById(create.taskId)).deletedAt);
-  assert.equal((await agent.get("/api/offline/snapshot")).body.tasks.length, 0);
+  assert.equal((await agent.get("/api/offline/snapshot")).body.tasks.filter(t=>!t.deletedAt).length, 0);
 });
 
 test("server changes, deleted tasks, timezone changes, and missing parent operations pause sync", async () => {

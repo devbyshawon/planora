@@ -1,5 +1,11 @@
 # Validation for v0.8.1
 
+## Integrated offline planner — 3 November 2026
+
+The separate offline screen was replaced by the original React planner with an IndexedDB/API adapter, durable queued actions, signature/receipt conflict protection, local recurrence/templates, history/search/review/progress, planner preferences/categories, and browser PDF/CSV/ICS using the shared existing layout/rules. `npm run verify` passed **156 tests** (10 shared + 146 server/worker), build, and production smoke including every emitted precache resource. No dependencies were installed or changed. The PDF renderer is an existing dependency loaded in a separate browser chunk.
+
+A disposable browser account/database verified the normal calendar/dialog while HTTP was stopped, creating a task offline, persistence after root reload, downloads of PDF/CSV/ICS containing that task, and automatic reconnection sync with exactly one server task. Template/recurrence/settings chains and uncertain retry/account isolation are covered by automated tests. The updated source-review package supersedes the earlier separate-workspace ZIP. Actual installed-device acceptance remains a user check. Google/email/authentication/security/admin actions still require online services; closed-app reminders/sync are not guaranteed.
+
 ## Offline task workspace — 3 November 2026
 
 `npm run verify` passed with **147 tests** (10 shared + 137 server/worker), production build, and production startup/PWA smoke. New coverage includes owner/origin enforcement, task/receipt atomicity, idempotent create/delete retries, concurrent retries, chained local versions, stale/deleted tasks, timezone/category/schedule/overlap rejection, local queue transitions, and offline shell asset delivery without caching APIs.

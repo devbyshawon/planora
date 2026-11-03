@@ -17,7 +17,8 @@ export function enqueue(state, { id, taskId, kind, body, allowOverlap = false },
     if (data.location === "calendar") {
       if (!/^\d{4}-\d{2}-\d{2}$/.test(data.date) || new Date(data.date + "T00:00:00Z").toISOString().slice(0, 10) !== data.date) throw new Error("Choose a valid date.");
       Object.assign(data, validateRange(data.startTime, data.endTime));
-      if (!allowOverlap && tasks.some(t => t._id !== taskId && t.location === "calendar" && t.date === data.date && t.startMinute < data.endMinute && t.endMinute > data.startMinute)) throw new Error("This overlaps a saved task. Adjust the time or explicitly allow overlaps.");
+      const scheduleChanged = !previous || previous.location !== "calendar" || ["date","startTime","endTime"].some(k=>data[k]!==previous[k]);
+      if (scheduleChanged && !allowOverlap && tasks.some(t => !t.deletedAt && t._id !== taskId && t.location === "calendar" && t.date === data.date && t.startMinute < data.endMinute && t.endMinute > data.startMinute)) throw new Error("This overlaps a saved task. Adjust the time or explicitly allow overlaps.");
     } else data.status = "not_completed";
     if (previous?.location === "bucket" && data.location === "calendar") data.status = "scheduled";
   }

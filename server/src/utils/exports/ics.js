@@ -1,6 +1,6 @@
 import { DateTime } from "luxon";
-import { occursOn } from "../recurrence.js";
-import { categoryName, statusName } from "./data.js";
+import { occursOn } from "../../../../shared/recurrence.js";
+import { categoryName, statusName } from "../../../../shared/exportModel.js";
 export const icsText = (value) =>
   String(value ?? "")
     .replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f]/g, "")
@@ -13,7 +13,7 @@ export function foldLine(line) {
   let part = "",
     bytes = 0;
   for (const char of line) {
-    const size = Buffer.byteLength(char);
+    const size = new TextEncoder().encode(char).length;
     if (bytes + size > 75) {
       lines.push(part);
       part = " ";

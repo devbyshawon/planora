@@ -29,15 +29,15 @@ function worker({ shell = false } = {}) {
     async skipWaiting() { skipped++; },
     addEventListener(type, callback) { events[type] = callback; },
   };
-  runInNewContext(source.replace("__PLANORA_BUILD__", "test-version").replace('"__PLANORA_SHELL_FILES__"', shell ? JSON.stringify(["/offline-planner.html", "/assets/offline-12345678.js"]) : '[]'), {
-    self, caches, URL, Response,
+  runInNewContext(source.replace("__PLANORA_BUILD__", "test-version").replace('"__PLANORA_SHELL_FILES__"', shell ? JSON.stringify(["/", "/offline-planner.html", "/assets/offline-12345678.js"]) : '[]'), {
+    self, caches, URL, Response, AbortSignal,
     Request: class extends Request { constructor(path, options) { super(new URL(path, origin), options); } },
     fetch: async request => {
       calls.push(request);
       if (fail) throw new TypeError("Network unavailable");
       const path = key(request);
       const response = new Response(path.endsWith("/offline.html") ? "Public offline screen" : "Resource", {
-        status, headers: { "Content-Type": contentType, "Cache-Control": cacheControl },
+        status, headers: { "Content-Type": path.endsWith(".css") ? "text/css" : contentType, "Cache-Control": cacheControl },
       });
       Object.defineProperty(response, "type", { value: "basic" });
       return response;

@@ -10,7 +10,7 @@ Public release preparation is tracked in [PUBLIC_RELEASE.md](./docs/PUBLIC_RELEA
 
 ## What works now
 
-- Installable PWA with user-controlled updates and an opt-in offline workspace for saved account tasks, queued edits, automatic sync, and JSON backups. See [installation](./docs/PWA.md) and [offline instructions](./docs/OFFLINE.md).
+- Installable PWA with user-controlled updates and offline support in the original planner interface, queued edits, automatic sync, local exports, and JSON recovery backups. See [installation](./docs/PWA.md) and [offline instructions](./docs/OFFLINE.md).
 - Day/week rows follow actual task ranges such as 09:15–09:55, 10:00–10:30, and 11:30–13:30. No fixed hourly scaffold.
 - Each weekly day has independent rows; gaps are compact, overlaps keep exact individual ranges, and any valid duration remains editable.
 

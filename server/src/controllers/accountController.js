@@ -182,7 +182,7 @@ export async function listCategories(req, res) {
 }
 export async function createCategory(req, res) {
   const values = categoryInput(req.body),
-    id = `cat_${randomBytes(12).toString("hex")}`;
+    id = `cat_${req.offlineId || randomBytes(12).toString("hex")}`;
   const user = await User.findOneAndUpdate(
     {
       _id: req.user._id,

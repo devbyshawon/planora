@@ -38,8 +38,14 @@ try {
     const page = await response.text(); assert.ok(page.includes(`<title>${title}`)); assert.ok(page.includes("mailto:shawon12hossain@gmail.com")); assert.ok(!page.includes('<div id="root">'));
   }
   const legalStyles = await call("/legal.css"); assert.equal(legalStyles.status, 200); assert.match(legalStyles.headers.get("content-type"), /text\/css/);
-  const offlineWorkspace = await call("/offline-planner.html"); assert.equal(offlineWorkspace.status, 200); assert.match(await offlineWorkspace.text(), /id="offline-root"/);
+  const offlineWorkspace = await call("/offline-planner.html"); assert.equal(offlineWorkspace.status, 200); assert.match(await offlineWorkspace.text(), /id="root"/);
   assert.ok(workerSource.includes("/offline-planner.html") && !workerSource.includes("__PLANORA_SHELL_FILES__"));
+  const shellPaths = JSON.parse(workerSource.match(/const SHELL_FILES = (\[[^;]+\]);/)[1]);
+  for (const path of shellPaths) {
+    const response = await call(path); assert.equal(response.status, 200, `Precache resource ${path}`);
+    if (/\.js$/.test(path)) assert.match(response.headers.get("content-type"), /javascript/, `Precache JavaScript ${path}`);
+    if (/\.css$/.test(path)) assert.match(response.headers.get("content-type"), /text\/css/, `Precache stylesheet ${path}`);
+  }
   assert.match(await (await call("/some/client/path")).text(), /<div id="root">/);
   const missing = await call("/api/not-a-route"); assert.equal(missing.status, 404); assert.match(missing.headers.get("content-type"), /json/);
   const headers = { Origin: origin, "X-Planora-Client": "web", "Content-Type": "application/json", "X-Forwarded-Proto": "https" };

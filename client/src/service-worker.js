@@ -3,7 +3,7 @@ const VERSION = "__PLANORA_BUILD__";
 const PUBLIC_CACHE = `planora-public-${VERSION}`;
 const ASSET_CACHE = `planora-assets-${VERSION}`;
 const OFFLINE_FILES = ["/offline.html", "/offline.css", "/offline.js"];
-// Public offline workspace HTML and bundled code only, never account responses.
+// Anonymous application HTML and bundled code only, never account responses.
 const SHELL_FILES = "__PLANORA_SHELL_FILES__";
 
 self.addEventListener("install", event => {
@@ -12,6 +12,8 @@ self.addEventListener("install", event => {
     for (const path of [...OFFLINE_FILES, ...(Array.isArray(SHELL_FILES) ? SHELL_FILES : [])]) {
       const response = await fetch(new Request(path, { cache: "reload", credentials: "omit" }));
       if (!response.ok || response.redirected) throw new Error("Offline page unavailable");
+      if (/\.js$/.test(path) && !(response.headers.get("Content-Type") || "").includes("javascript")) throw new Error("Offline JavaScript unavailable");
+      if (/\.css$/.test(path) && !(response.headers.get("Content-Type") || "").includes("text/css")) throw new Error("Offline stylesheet unavailable");
       await cache.put(path, response);
     }
   })());
@@ -48,11 +50,11 @@ self.addEventListener("fetch", event => {
   if (request.mode === "navigate") {
     event.respondWith((async () => {
       try {
-        const response = await fetch(request);
+        const response = await fetch(request, { signal: AbortSignal.timeout(8000) });
         if (response.status < 500) return response;
       } catch {}
       if (!url.search && ["/", "/offline-planner.html"].includes(url.pathname)) {
-        const shell = await (await caches.open(PUBLIC_CACHE)).match("/offline-planner.html");
+        const shell = await (await caches.open(PUBLIC_CACHE)).match("/");
         if (shell) return shell;
       }
       return (await (await caches.open(PUBLIC_CACHE)).match("/offline.html")) ||

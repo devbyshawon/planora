@@ -1,6 +1,6 @@
 # Install Planora
 
-Planora is an installable Progressive Web App with an opt-in [offline task workspace](./OFFLINE.md). It can use the existing free HTTPS Vercel address; a purchased domain is not required.
+Planora is an installable Progressive Web App with [offline support in the original interface](./OFFLINE.md). It can use the existing free HTTPS Vercel address; a purchased domain is not required.
 
 ## Installation
 
@@ -14,7 +14,7 @@ The browser controls installation availability. If an installation prompt is una
 
 ## Connection and updates
 
-The usual planner needs internet. To edit saved account tasks without a connection, open **Offline planner** while signed in and explicitly save your device copy first. It supports local task edits, a durable queue, and automatic sync while open and connected; see [OFFLINE.md](./OFFLINE.md) for conflict handling, recurrence limits, backups, and privacy. Account settings, Google sync, and server exports still need internet. A free backend may take time to wake up.
+After an initial online sign-in and completed app update, the same planner works from the saved device copy when offline. Supported edits are queued and sync while the app is open and connected, waiting for open dialogs to close. PDF/CSV/ICS downloads also work locally. Google, account emails, password/email changes, sign-in, and administration still need their services. See [OFFLINE.md](./OFFLINE.md).
 
 When an update is ready, save your current form before choosing **Reload update** and confirming. Other open tabs are informed of updates and do not reload automatically.
 
@@ -22,7 +22,7 @@ Installing the app does not add background push notifications. Existing browser 
 
 ## Cache boundaries
 
-The service worker precaches the public offline workspace shell, build JavaScript/CSS, and reconnect page. It does not cache API calls, authenticated HTML, account responses, exports, or Google OAuth traffic. Network failures at the root/workspace URL fall back to the workspace shell; other navigations use the reconnect screen. Private offline snapshots and queued changes are stored separately in IndexedDB only after explicit device opt-in. Signing out of the online app does not remove that readable device copy.
+The service worker precaches the public application shell, build JavaScript/CSS, and reconnect page. It does not cache API calls, authenticated HTML, account responses, exports, or Google OAuth traffic. Network failures at the root/workspace URL fall back to the workspace shell; other navigations use the reconnect screen. Private offline snapshots and queued changes are stored separately in IndexedDB after online sign-in. Sign out online after syncing to clear the readable device copy.
 
 The worker cleans up its own previous caches and retains one prior build-asset cache for open tabs. It does not remove unrelated origin caches. Updates activate after user confirmation, except for the first installation.
 

@@ -15,6 +15,7 @@ import SiteSettings from "./models/SiteSettings.js";
 import ReminderDelivery from "./models/ReminderDelivery.js";
 import AdminAudit from "./models/AdminAudit.js";
 import OfflineOperation from "./models/OfflineOperation.js";
+import OfflineAction from "./models/OfflineAction.js";
 import { runtimeEnvironment } from "./utils/environment.js";
 dotenv.config({
   path: fileURLToPath(new URL("../.env", import.meta.url)),
@@ -43,6 +44,7 @@ try {
     ReminderDelivery.init(),
     AdminAudit.init(),
     OfflineOperation.init(),
+    OfflineAction.init(),
   ]);
   const app = createApp({
     jwtSecret: runtime.jwtSecret,

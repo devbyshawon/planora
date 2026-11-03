@@ -2,7 +2,7 @@
   "id": "/",
   "name": "Planora",
   "short_name": "Planora",
-  "description": "Plan your day with exact custom time slots. Enable the offline workspace to edit saved tasks on a trusted device and sync when connected.",
+  "description": "Plan your day with exact custom time slots. Keep using the same planner offline after signing in, with changes synced when connected.",
   "lang": "en",
   "start_url": "/",
   "scope": "/",

@@ -5,7 +5,7 @@ export default function pwaBuild() {
   return {
     name: "planora-pwa",
     apply: "build",
-    generateBundle(_options, bundle) {
+    generateBundle: { order: "post", handler(_options, bundle) {
       const source = readFileSync(new URL("./src/service-worker.js", import.meta.url), "utf8");
       const hash = createHash("sha256").update(source);
       for (const name of Object.keys(bundle).sort()) {
@@ -19,7 +19,7 @@ export default function pwaBuild() {
       }
       this.emitFile({ type: "asset", fileName: "sw.js", source:
         source.replace("__PLANORA_BUILD__", hash.digest("hex").slice(0, 16))
-          .replace('"__PLANORA_SHELL_FILES__"', JSON.stringify(["/offline-planner.html", ...Object.keys(bundle).filter(name => name.startsWith("assets/") && /\.(?:js|css)$/.test(name)).map(name => `/${name}`)])) });
-    },
+          .replace('"__PLANORA_SHELL_FILES__"', JSON.stringify(["/", "/offline-planner.html", ...Object.keys(bundle).filter(name => name.startsWith("assets/") && /\.(?:js|css|woff2?)$/.test(name)).map(name => `/${name}`)])) });
+    } },
   };
 }
